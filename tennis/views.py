@@ -658,6 +658,7 @@ def google_login(request):
         scope=GOOGLE_SCOPE
     )
     authorization_url, state = oauth.authorization_url(GOOGLE_AUTH_URL)
+    print("URL générée:", authorization_url)
     request.session['oauth_state'] = state
     return redirect(authorization_url)
 
