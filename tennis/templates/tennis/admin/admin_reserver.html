@@ -1,0 +1,53 @@
+{% extends "tennis/base.html" %}
+{% block title %}Réserver pour un membre{% endblock %}
+
+{% block content %}
+<div class="col-md-6">
+    <h2 class="mb-4">Réserver pour un membre</h2>
+
+    {% if erreur %}
+    <div class="alert alert-danger">{{ erreur }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Membre</label>
+            <select name="membre" class="form-select" required>
+                {% for m in membres %}
+                    <option value="{{ m.numero_affiliation }}">{{ m.nom }} {{ m.prenom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Terrain</label>
+            <select name="terrain" class="form-select" required>
+                {% for t in terrains %}
+                    <option value="{{ t.numero }}">Terrain {{ t.numero }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" name="date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Heure</label>
+            <select name="heure" class="form-select" required>
+                {% for c in creneaux %}
+                    <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Type de jeu</label>
+            <select name="type_jeu" class="form-select" required>
+                <option value="simple">Simple (1h)</option>
+                <option value="double">Double (2h)</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-dark">Réserver</button>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary ms-2">Annuler</a>
+    </form>
+</div>
+{% endblock %}

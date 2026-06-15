@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tennis Club - {% block title %}Bienvenue{% endblock %}</title>
+    <!-- Bootstrap pour le style -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (pour l'asynchrone plus tard) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+</head>
+<body id="{% block bodyId %}genericPage{% endblock %}">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">🎾 Tennis Club</a>
+        
+        {% if request.session.membre_id %}
+        <!-- Liens de navigation -->
+        <div class="navbar-nav me-auto">
+            <a class="nav-link text-light" href="{% url 'liste_membres' %}">Membres</a>
+            <a class="nav-link text-light" href="{% url 'mes_reservations' %}">Mes réservations</a> 
+            <a class="nav-link text-light" href="{% url 'liste_terrains' %}">Terrains</a> 
+            {% if request.session.is_admin %}
+            <a class="nav-link text-light" href="{% url 'admin_dashboard' %}">Administration</a>
+            {% endif %}         
+        </div>
+        
+        <!-- Nom + déconnexion -->
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link text-light" href="{% url 'modifier_profil' %}">{{ request.session.membre_nom }}</a>
+            <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+        </div>
+        {% endif %}
+    </div>
+</nav>
+
+    <!-- CONTENU -->
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

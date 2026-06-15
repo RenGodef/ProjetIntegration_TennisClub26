@@ -1,0 +1,12 @@
+{% extends "tennis/base.html" %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<h2>Bienvenue, {{ request.session.membre_nom }} !</h2>
+
+{% if request.session.is_admin %}
+    <p>Vous êtes connecté en tant qu'<strong>administrateur</strong>.</p>
+{% else %}
+    <p>Vous êtes connecté en tant que <strong>membre</strong>.</p>
+{% endif %}
+{% endblock %}

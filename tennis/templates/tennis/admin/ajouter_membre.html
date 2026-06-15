@@ -1,0 +1,62 @@
+{% extends "tennis/base.html" %}
+{% block title %}Ajouter un membre{% endblock %}
+
+{% block content %}
+<div class="col-md-6">
+    <h2 class="mb-4">Ajouter un membre</h2>
+
+    {% if erreur %}
+    <div class="alert alert-danger">{{ erreur }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">N° d'affiliation AFT (7 chiffres)</label>
+            <input type="text" name="numero_affiliation" class="form-control" maxlength="7" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" name="nom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Adresse</label>
+            <input type="text" name="adresse" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Date de naissance</label>
+            <input type="date" name="date_naissance" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Sexe</label>
+            <select name="sexe" class="form-select" required>
+                <option value="M">Masculin</option>
+                <option value="F">Féminin</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Classement</label>
+            <select name="classement" class="form-select" required>
+                {% for val, label in classements %}
+                    <option value="{{ val }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <p class="text-muted">Le mot de passe temporaire sera <strong>password123</strong>. Le membre devra le changer à sa première connexion.</p>
+        <button type="submit" class="btn btn-dark">Ajouter</button>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary ms-2">Annuler</a>
+    </form>
+</div>
+{% endblock %}

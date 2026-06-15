@@ -1,0 +1,43 @@
+{% extends "tennis/base.html" %}
+{% block title %}Bloquer un terrain{% endblock %}
+
+{% block content %}
+<div class="col-md-6">
+    <h2 class="mb-4">Bloquer un terrain</h2>
+
+    {% if erreur %}
+    <div class="alert alert-danger">{{ erreur }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Terrain</label>
+            <select name="terrain" class="form-select" required>
+                {% for t in terrains %}
+                    <option value="{{ t.numero }}">Terrain {{ t.numero }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" name="date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Heure de début</label>
+            <input type="time" name="heure_debut" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Heure de fin</label>
+            <input type="time" name="heure_fin" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Motif</label>
+            <input type="text" name="motif" class="form-control" 
+                   placeholder="ex: interclub, tournoi, cours..." required>
+        </div>
+        <button type="submit" class="btn btn-dark">Bloquer</button>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary ms-2">Annuler</a>
+    </form>
+</div>
+{% endblock %}

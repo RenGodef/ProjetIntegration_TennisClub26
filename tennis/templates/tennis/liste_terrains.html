@@ -1,0 +1,52 @@
+{% extends "tennis/base.html" %}
+{% block title %}Terrains{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Planning des terrains</h2>
+
+<!-- Sélecteur de date -->
+<form method="get" class="d-flex align-items-center gap-3 mb-4">
+    <label class="form-label mb-0">Date :</label>
+    <input type="date" name="date" class="form-control w-auto" 
+           value="{{ date_selectionnee }}"
+           onchange="this.form.submit()">
+</form>
+
+<!-- Planning -->
+<div class="row">
+    {% for item in planning %}
+    <div class="col-md-6 mb-4">
+        <h5 class="mb-3">Terrain {{ item.terrain.numero }}</h5>
+        <table class="table table-bordered table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Heure</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slot in item.slots %}
+                <tr>
+                    <td>{{ slot.heure }}</td>
+                    <td>
+                        {% if slot.bloque %}
+                            <span class="badge bg-danger">
+                                Bloqué — {{ slot.bloque.motif }}
+                            </span>
+                        {% elif slot.reservation %}
+                            <span class="badge bg-warning text-dark">
+                                Réservé — {{ slot.reservation.membre.nom }} {{ slot.reservation.membre.prenom }}
+                                ({{ slot.reservation.type_jeu }})
+                            </span>
+                        {% else %}
+                            <span class="badge bg-success">Libre</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

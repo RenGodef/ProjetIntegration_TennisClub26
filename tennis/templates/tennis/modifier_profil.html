@@ -1,0 +1,60 @@
+{% extends "tennis/base.html" %}
+{% block title %}Mon profil{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="mb-4">Mes coordonnées</h2>
+
+            <!-- Catégories du membre calculées automatiquement selon âge et sexe -->
+            <div class="alert alert-info mb-4">
+                <strong>Vos catégories :</strong>
+                    {% for cat in membre.get_categories %}
+                <span class="badge bg-primary me-1">{{ cat }}</span>
+                     {% endfor %}
+            </div>
+            
+        {% if message %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endif %}
+        {% if erreur %}
+        <div class="alert alert-danger">{{ erreur }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label class="form-label">Adresse</label>
+                <input type="text" name="adresse" class="form-control" 
+                       value="{{ membre.adresse }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Téléphone</label>
+                <input type="text" name="telephone" class="form-control" 
+                       value="{{ membre.telephone }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" 
+                       value="{{ membre.email }}" required>
+            </div>
+
+            <hr>
+            <h5>Changer mon mot de passe <small class="text-muted fs-6">(optionnel)</small></h5>
+            
+            <div class="mb-3">
+                <label class="form-label">Nouveau mot de passe</label>
+                <input type="password" name="password1" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Confirmer le mot de passe</label>
+                <input type="password" name="password2" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-dark">Enregistrer</button>
+            <a href="{% url 'accueil' %}" class="btn btn-outline-secondary ms-2">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

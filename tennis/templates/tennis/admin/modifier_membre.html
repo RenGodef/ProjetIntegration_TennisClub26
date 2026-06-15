@@ -1,0 +1,51 @@
+{% extends "tennis/base.html" %}
+{% block title %}Modifier un membre{% endblock %}
+
+{% block content %}
+<div class="col-md-6">
+    <h2 class="mb-4">Modifier le membre {{ membre.prenom }} {{ membre.nom }}</h2>
+
+    {% if message %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+    {% if erreur %}
+    <div class="alert alert-danger">{{ erreur }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" name="nom" class="form-control" value="{{ membre.nom }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" value="{{ membre.prenom }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Adresse</label>
+            <input type="text" name="adresse" class="form-control" value="{{ membre.adresse }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" value="{{ membre.telephone }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ membre.email }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Classement</label>
+            <select name="classement" class="form-select" required>
+                {% for val, label in classements %}
+                    <option value="{{ val }}" {% if val == membre.classement %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-dark">Enregistrer</button>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary ms-2">Retour</a>
+    </form>
+</div>
+{% endblock %}

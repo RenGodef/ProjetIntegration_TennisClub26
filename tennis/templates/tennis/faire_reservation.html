@@ -1,0 +1,142 @@
+{% extends "tennis/base.html" %}
+{% block title %}Nouvelle réservation{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Nouvelle réservation</h2>
+
+{% if erreur %}
+<div class="alert alert-danger">{{ erreur }}</div>
+{% endif %}
+
+<form method="post" class="col-md-6">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        <label class="form-label">Terrain</label>
+        <select name="terrain" class="form-select" required>
+            {% for t in terrains %}
+                <option value="{{ t.numero }}">Terrain {{ t.numero }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Date</label>
+        <input type="date" name="date" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Heure</label>
+        <select name="heure" class="form-select" required>
+            {% for c in creneaux %}
+                <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+        <div id="disponibilite" style="display:none;"></div>
+        
+    <div class="mb-3">
+        <label class="form-label">Type de jeu</label>
+        <select name="type_jeu" class="form-select" id="type_jeu" required>
+            <option value="simple">Simple (1h)</option>
+            <option value="double">Double (2h)</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Partenaire</label>
+        <select name="partenaire1" class="form-select">
+            <option value="">-- Choisir un partenaire --</option>
+            {% for m in membres_actifs %}
+                <option value="{{ m.numero_affiliation }}">{{ m.nom }} {{ m.prenom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Partenaires supplémentaires pour le double -->
+    <div id="partenaires_double" style="display:none;">
+        <div class="mb-3">
+            <label class="form-label">Partenaire 2</label>
+            <select name="partenaire2" class="form-select">
+                <option value="">-- Choisir --</option>
+                {% for m in membres_actifs %}
+                    <option value="{{ m.numero_affiliation }}">{{ m.nom }} {{ m.prenom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Partenaire 3</label>
+            <select name="partenaire3" class="form-select">
+                <option value="">-- Choisir --</option>
+                {% for m in membres_actifs %}
+                    <option value="{{ m.numero_affiliation }}">{{ m.nom }} {{ m.prenom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-dark">Réserver</button>
+    <a href="{% url 'mes_reservations' %}" class="btn btn-outline-secondary ms-2">Annuler</a>
+</form>
+
+<script>
+$(document).ready(function() {
+    // Affiche/cache les partenaires selon le type de jeu
+    $('#type_jeu').change(function() {
+        if ($(this).val() === 'double') {
+            $('#partenaires_double').show();
+        } else {
+            $('#partenaires_double').hide();
+        }
+    });
+
+    // Vérifie la disponibilité du terrain en temps réel via AJAX
+    function verifierDisponibilite() {
+        var terrain = $('select[name="terrain"]').val();
+        var date    = $('input[name="date"]').val();
+        var heure   = $('select[name="heure"]').val();
+
+        // On vérifie seulement si les 3 champs sont remplis
+        if (!terrain || !date || !heure) {
+            $('#disponibilite').html('').hide();
+            return;
+        }
+
+        // Appel AJAX vers Django
+        $.ajax({
+            url: "{% url 'verifier_disponibilite' %}",
+            method: 'GET',
+            data: {
+                terrain: terrain,
+                date: date,
+                heure: heure
+            },
+            success: function(data) {
+                if (data.disponible === true) {
+                    $('#disponibilite')
+                        .removeClass('alert-danger')
+                        .addClass('alert alert-success')
+                        .html(data.message)
+                        .show();
+                } else if (data.disponible === false) {
+                    $('#disponibilite')
+                        .removeClass('alert-success')
+                        .addClass('alert alert-danger')
+                        .html(data.message)
+                        .show();
+                }
+            },
+            error: function() {
+                $('#disponibilite').hide();
+            }
+        });
+    }
+
+    // Déclenche la vérification quand terrain, date ou heure change
+    $('select[name="terrain"]').change(verifierDisponibilite);
+    $('input[name="date"]').change(verifierDisponibilite);
+    $('select[name="heure"]').change(verifierDisponibilite);
+});
+</script>
+{% endblock %}
